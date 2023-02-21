@@ -3,8 +3,7 @@ Website for Velo City Pizza, San Mateo.
 Custom HTML/CSS. Interactive order-online feature populated directly from restaurant's menu via SquareUp API.
 
 # Developer Setup
-https://github.com/Lants/velo-city-pizza/wiki/Setup
-[Hello World](../../../wiki/Setup)
+[Setup Instructions](../../../wiki/Setup)
 
 Previously attempted via Flask. Ported to MERN stack for educational purposes.
 ## Developers:
