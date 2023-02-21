@@ -8,6 +8,6 @@ Custom HTML/CSS. Interactive order-online feature populated directly from restau
 Previously attempted via Flask. Ported to MERN stack for educational purposes.
 ## Developers:
 ### Lance Chong-Kit
-* List contributions here
+* List contact info and contributions here
 ### Patrick Chiang
-* List contributions here
+* List contact info and contributions here
