@@ -6,6 +6,7 @@ const mongoose = require('mongoose');
 
 const index_routes = require('./routes/index');
 const order_routes = require('./routes/order');
+const category_routes = require('./routes/category');
 
 var DEBUG_MODE = false;
 if (process.argv[2]) DEBUG_MODE = true;
@@ -27,6 +28,7 @@ app.use((req, res, next) => {
 // ---------------- PAGE ROUTES ----------------------
 app.use(index_routes);
 app.use(order_routes);
+app.use('/admin/catalog/category', category_routes); // Experimental
 
 // --- Connect to DB ---
 mongoose.set('strictQuery', false);
