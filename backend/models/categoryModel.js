@@ -13,6 +13,7 @@ const category_schema = new Schema({
         required: false
     },
     item_list: {
+        type: Array,
         required: true
     }
 }, {timestamps: true});

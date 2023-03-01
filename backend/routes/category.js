@@ -3,32 +3,28 @@
 
 const express = require('express');
 const {
-    createCategory
+    getCategories,
+    getCategoryById,
+    createCategory,
+    deleteCategory,
+    updateCategory
 } = require('../controllers/categoryController');
 
 const router = express.Router();
 
 // GET all categories
-router.get('/', (req, res) => {
-    res.json({msg:'GET all categories'});
-});
+router.get('/', getCategories);
 
 // GET a single category
-router.get('/:id', (req, res) => {
-    res.json({msg:'GET a single category'});
-});
+router.get('/:id', getCategoryById);
 
 // POST a new category
 router.post('/', createCategory);
 
-// UPDATE a category
-router.delete('/:id', (req, res) => {
-    res.json({msg:'UPDATE a category'});
-});
-
 // DELETE a category
-router.patch('/:id', (req, res) => {
-    res.json({msg:'DELETE a category'});
-});
+router.delete('/:id', deleteCategory);
+
+// UPDATE a category
+router.patch('/:id', updateCategory);
 
 module.exports = router;

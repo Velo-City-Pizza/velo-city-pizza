@@ -4,8 +4,6 @@ const express = require('express');
 const app = express();
 const mongoose = require('mongoose');
 
-const index_routes = require('./routes/index');
-const order_routes = require('./routes/order');
 const category_routes = require('./routes/category');
 
 var DEBUG_MODE = false;
@@ -26,8 +24,6 @@ app.use((req, res, next) => {
 });
 
 // ---------------- PAGE ROUTES ----------------------
-app.use(index_routes);
-app.use(order_routes);
 app.use('/admin/catalog/category', category_routes); // Experimental
 
 // --- Connect to DB ---
