@@ -1,13 +1,13 @@
 require('dotenv').config()
 
-const express = require('express');
-const app = express();
-const mongoose = require('mongoose');
+const express = require('express')
+const app = express()
+const mongoose = require('mongoose')
 
-const category_routes = require('./routes/category');
+const category_routes = require('./routes/category')
 
-var DEBUG_MODE = false;
-if (process.argv[2]) DEBUG_MODE = true;
+var DEBUG_MODE = false
+if (process.argv[2]) DEBUG_MODE = true
 
 // ----------------- MIDDLEWARE ----------------------
     //  These get called on every request before the page routes
@@ -18,24 +18,24 @@ app.use(express.json())
 // Custom middleware function, currently only used for debug logging
 app.use((req, res, next) => {
     if (DEBUG_MODE) {
-        console.log(req.path, req.method);
+        console.log(req.path, req.method)
     }
-    next();
-});
+    next()
+})
 
 // ---------------- PAGE ROUTES ----------------------
-app.use('/admin/catalog/category', category_routes); // Experimental
+app.use('/admin/catalog/category', category_routes) // Experimental
 
 // --- Connect to DB ---
-mongoose.set('strictQuery', false);
+mongoose.set('strictQuery', false)
 mongoose.connect(process.env.MONG_URI)
     .then(() =>{
         // -- Listen for requests --
         app.listen(process.env.PORT, () => {
-            console.log(`Connected to MongoDB, listening on port ${process.env.PORT}`);
-            console.log('DEBUG MODE =', DEBUG_MODE);
-        });
+            console.log(`Connected to MongoDB, listening on port ${process.env.PORT}`)
+            console.log('DEBUG MODE =', DEBUG_MODE)
+        })
     })
     .catch((error) => {
         console.log(error)
-    });
+    })
