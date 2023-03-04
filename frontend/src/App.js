@@ -1,25 +1,30 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom'
+import { BrowserRouter, useRoutes } from 'react-router-dom'
+import React from "react"
 
-// Pages and componenets
+// Pages and components
 import Home from './pages/Home'
-import Navbar from './componenets/Navbar'
+import Layout from './layouts/Layout'
+
+import './css_global/main.scss'
 
 function App() {
-  return (
-    <div className="App">
-      <BrowserRouter>
-        <Navbar />
-        <div className="pages">
-          <Routes>
-            <Route
-              path={["/", "/home", "/index", "/index.html", "index.js"]}
-              element={<Home />}
-              />
-          </Routes>
-        </div>
-      </BrowserRouter>
-    </div>
-  );
+  var routes = []
+  const home = <Home />
+  routes = routes.concat(["/", "/home", "/index", "/index.html", "/index.js"].map(path => ({path, element: home})))
+  console.log(routes)
+  return useRoutes(routes)
 }
 
-export default App;
+function AppWrapper() {
+  return (
+    <>
+      <BrowserRouter>
+        <Layout>
+          <App />
+        </Layout>
+      </BrowserRouter>
+    </>
+  )
+}
+
+export default AppWrapper

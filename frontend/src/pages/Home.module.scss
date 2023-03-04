@@ -1,0 +1,5 @@
+@use '../css_global/0_abstracts/' as *;
+
+.chevronDown {
+    @include size(40px);
+}

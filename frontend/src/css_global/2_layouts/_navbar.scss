@@ -1,0 +1,84 @@
+@use '../0_abstracts/' as *;
+
+.navbar {
+    padding: 15px 0;
+    position: fixed;
+    width: 100%;
+    z-index: 99;
+    transition: background-color 0.5s;
+
+    a {
+        text-decoration: none;
+        color: white;
+    }
+
+    ul {
+        color: white;
+        font-size: 20px;
+        list-style: none;
+        padding-right: 50px;
+        position: absolute;
+        top: 50%;
+        right: 0;
+        transition: max-height 0.4s;
+        transform: translate(0,-50%);
+    }
+
+    li {
+        float: left;
+        padding: 0 15px;
+    }
+
+    @include respond-to('small-right') {
+        &:hover {
+            background-color: rgba(30, 29, 29, 0.745);
+        }
+    }
+
+    .nav-logo  img {
+        @include size(150px, 75px);
+        padding-left: 20px;
+    }
+
+    .mobile-menu{
+        display: none;
+    }
+
+    // ---------- Responsive Design (mobile) -----------------
+    @include respond-to('small-left') {
+        background-color: #292E37;
+        padding-top: 0;
+        position: fixed;
+        width: 100%;
+        z-index: 99;
+        padding: 0;
+
+        ul {
+            position: static;
+            max-height: 0;
+            overflow: hidden;
+            transform: translate(0, 0);
+        }
+
+        li {
+            float: none;
+            padding: 15px 0;
+            padding-left: 40px;
+        }
+
+        img {
+            display: none;
+        }
+
+        .mobile-menu {
+            color: white;
+            padding: 15px 0;
+            padding-left: 20px;
+            display: block;
+        }
+
+        .show {
+            max-height: 300px;
+        }
+    }
+}

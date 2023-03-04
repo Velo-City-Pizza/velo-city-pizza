@@ -1,0 +1,6 @@
+$breakpoints: (
+    'small-left': (max-width: 800px),
+    'small-right': (min-width: 800px),
+    'large': (max-width: 1000px),
+    'large-right': (max-width: 1000px)
+);
