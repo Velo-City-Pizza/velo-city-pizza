@@ -5,6 +5,12 @@
     height: $height;
 }
 
+@mixin button-hover($color, $b-radius) {
+  background-color: $color;
+  border-radius: $b-radius;
+  transition: background-color 0.5s, border-radius 0.5s;
+}
+
 /// Responsive breakpoint manager
 /// @access public
 /// @param {String} $breakpoint - Breakpoint
