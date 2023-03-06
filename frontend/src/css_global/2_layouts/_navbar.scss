@@ -7,17 +7,20 @@
     z-index: $z-index-navbar;
     transition: background-color 0.5s;
     display: flex;
+    max-height: $navbar-height;
 
     ul {
         position: absolute;
         display: flex;
-        top: 50%;
         right: 1rem;
-        transform: translate(0, -50%);
+        height: 100%;
     }
 
     li {
         list-style: none;
+        display: flex;
+        height: 100%;
+        align-items: center;
     }
 
     .nav-name {
@@ -29,14 +32,14 @@
         font-weight: 100;
         text-decoration: none;
         color: white;
-        padding: 30px;
         display: block;
         text-align: center;
+        padding: calc($navbar-height / 5) 30px;
     }
 
     @include respond-to('small-right') {
         &:hover {
-            background-color: #3c3e42fe;
+            background-color: #3c3e42cb;
         }
 
         .nav-links a:hover {
@@ -45,7 +48,7 @@
     }
 
     .nav-logo img {
-        @include size(150px, 75px);
+        @include size(auto, calc($navbar-height - 30px));
         padding-left: 20px;
     }
 
@@ -60,6 +63,7 @@
         padding: 0;
         flex-direction: column;
         align-items: flex-start;
+        max-height: fit-content;
 
         .nav-name {
             display: block;
@@ -102,6 +106,7 @@
         li {
             width: 100%;
             border-top: 1px dotted rgb(66, 75, 104);
+            display: block
         }
 
         img {

@@ -1,5 +1,13 @@
 @use '../css_global/0_abstracts/' as *;
 
+.backgroundTexture {
+    background-image: url(../assets/img/pattern-bg.png);
+    background-attachment: fixed;
+    background-repeat: repeat;
+    height: 100%;
+    width: 100%;
+}
+
 .chevronDown {
     @include size(40px);
 }
