@@ -19,8 +19,8 @@ const Navbar = () => {
             </div>
             <ul className={`nav-links${expandMenu ? ' active' : ''}`}>
                 <li><a href="/">Home</a></li>
-                <li><a href="/menu">Menu</a></li>
                 <li><a href="/order_ahead">Order</a></li>
+                <li><a href="/menu">Menu</a></li>
             </ul>
             
         </nav>

@@ -1,13 +1,112 @@
 @use '../css_global/0_abstracts/' as *;
 
-.backgroundTexture {
+// This file is LOCALLY SCOPED when imported. I.e, classes aren't
+//  accessible by components unless directly imported
+
+.home {
     background-image: url(../assets/img/pattern-bg.png);
     background-attachment: fixed;
     background-repeat: repeat;
     height: 100%;
     width: 100%;
+    padding-top: $navbar-height;
+
+    .headlineContainer {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%,-50%);
+    }
+
+    h1 {
+        color: white;
+        font-size: 70px;
+        font-weight: 400;
+        text-align: center;
+        margin-bottom: 10px;
+    }
+
+    h2 {
+        color: darkgray;
+        font-size: 30px;
+        font-weight: 300;
+        text-align: center;
+        margin-top: 5px;
+    }
+
+
+    .headlineBtns {
+        margin-top: 8%;
+        text-align: center;
+    }
+
+    a {
+        border: 1px solid white;
+        padding: 5px 15px;
+        font-size: 25px;
+        margin: 0 5px;
+        background-color: rgba(206, 201, 201, 0.048);
+        text-decoration: none;
+        color: white;
+
+        &:hover {
+            background-color: rgba(221, 33, 0, 0.744);
+            transition: background-color 1s;
+        }
+    }
+
+    .chevronDown {
+        @include size(40px);
+        position: absolute;
+        bottom: 0;
+        color: white;
+        left: 50%;
+        transform: translateX(-50%);
+    }
 }
 
-.chevronDown {
-    @include size(40px);
+// --------- Responsive Design (mobile) -----------------
+@include respond-to('small-left') {
+    .home {
+        position: relative;
+        height: calc(100% - 60px);
+        top: 60px;
+
+        .headlineContainer {
+            width: 90%;
+            height: 90%;
+            
+            h1, h2 {
+                position: relative;
+                top: 10%;
+            }
+        }
+
+        h1 {
+            font-size: 40px;
+        }
+
+        h2 {
+            font-size: 20px;
+        }
+
+        .headlineBtns {
+            position: absolute;
+            display: flex;
+            margin: 0;
+            flex-direction: column;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 75%;
+            bottom: 10%;
+        }
+
+        a {
+            background-color: rgba(221, 33, 0, 0.397);
+            padding: 15px 5px;
+            margin-top: 15%;
+            border-radius: 5px;
+            width: 100%;
+        }
+    }
 }
