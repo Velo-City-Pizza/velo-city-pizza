@@ -1,10 +1,10 @@
-@use '../css_global/0_abstracts/' as *;
+@use '../../css_global/0_abstracts/' as *;
 
 // This file is LOCALLY SCOPED when imported. I.e, classes aren't
 //  accessible by components unless directly imported
 
 .home {
-    background-image: url(../assets/img/pattern-bg.png);
+    background-image: url(/assets/img/pattern-bg.png);
     background-attachment: fixed;
     background-repeat: repeat;
     height: 100%;
@@ -40,7 +40,7 @@
         text-align: center;
     }
 
-    a {
+    .headlineBtns a {
         border: 1px solid white;
         padding: 5px 15px;
         font-size: 25px;
@@ -83,11 +83,11 @@
         }
 
         h1 {
-            font-size: 40px;
+            font-size: 7.5vh;
         }
 
         h2 {
-            font-size: 20px;
+            font-size: 4vh;
         }
 
         .headlineBtns {
@@ -98,13 +98,13 @@
             left: 50%;
             transform: translateX(-50%);
             width: 75%;
-            bottom: 10%;
+            bottom: 7%;
         }
 
-        a {
+        .headlineBtns a {
             background-color: rgba(221, 33, 0, 0.397);
             padding: 15px 5px;
-            margin-top: 15%;
+            margin-top: 5vh;
             border-radius: 5px;
             width: 100%;
         }
