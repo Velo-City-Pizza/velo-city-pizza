@@ -14,7 +14,7 @@
 }
 
 %btn-solid {
-    background-color: rgba(206, 201, 201, 0.048);
+    background-color: $default-solid-btn;
     border: 1px solid white;
     color: white;
     text-decoration: none;
@@ -39,7 +39,7 @@
     }
 }
 
-@mixin btn-solid-hover($color-hover, $color: rgba(206, 201, 201, 0.048)) {
+@mixin btn-solid-hover($color-hover, $color: $default-solid-btn) {
     @extend %btn-solid;
     background-color: $color;
 

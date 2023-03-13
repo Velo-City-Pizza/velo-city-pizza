@@ -5,5 +5,9 @@ $breakpoints: (
     'large-right': (max-width: 1000px)
 );
 
+// ----------- Navbar -----------------
 $z-index-navbar: 10;
 $navbar-height: 100px;
+
+// ----------- Buttons ----------------
+$default-solid-btn: rgba(206, 201, 201, 0.088);
