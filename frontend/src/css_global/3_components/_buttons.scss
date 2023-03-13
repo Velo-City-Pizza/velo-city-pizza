@@ -1,1 +1,55 @@
-@use '../0_abstracts/' as *;
+@use "../0_abstracts/" as *;
+
+%btn-no-border {
+    background-color: transparent;
+    border-radius: 10px;
+    color: white;
+    display: block;
+    font-size: 25px;
+    font-weight: 100;
+    padding: calc($navbar-height / 5) 30px;
+    text-align: center;
+    text-decoration: none;
+    transition: background-color 0.5s, border-radius 0.5s;
+}
+
+%btn-solid {
+    background-color: rgba(206, 201, 201, 0.048);
+    border: 1px solid white;
+    color: white;
+    text-decoration: none;
+    transition: background-color 0.5s, border-radius 0.5s;
+
+    @include respond-to("small-left") {
+        border-radius: 5px;
+        width: 100%;
+    }
+}
+
+@mixin btn-no-border-hover($color-hover, $color: transparent) {
+    @extend %btn-no-border;
+    @include respond-to('small-right') {
+        &:hover {
+            background-color: $color-hover;
+        }
+    }
+
+    @include respond-to('small-left') {
+        pointer-events: none;
+    }
+}
+
+@mixin btn-solid-hover($color-hover, $color: rgba(206, 201, 201, 0.048)) {
+    @extend %btn-solid;
+    background-color: $color;
+
+    @include respond-to('small-right') {
+        &:hover {
+            background-color: $color-hover;
+        }
+    }
+
+    @include respond-to('small-left') {
+        pointer-events: none;
+    }
+}

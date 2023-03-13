@@ -1,10 +1,11 @@
-@use '../../css_global/0_abstracts/' as *;
+@use 'css_global/0_abstracts/' as *;
+@use 'css_global/3_components/buttons' as *;
 
 // This file is LOCALLY SCOPED when imported. I.e, classes aren't
 //  accessible by components unless directly imported
 
-.home {
-    background-image: url(/assets/img/pattern-bg.png);
+.headerTexture {
+    background-image: url('/assets/img/pattern-bg.png');
     background-attachment: fixed;
     background-repeat: repeat;
     height: 100%;
@@ -16,6 +17,9 @@
         top: 50%;
         left: 50%;
         transform: translate(-50%,-50%);
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
     }
 
     h1 {
@@ -41,18 +45,10 @@
     }
 
     .headlineBtns a {
-        border: 1px solid white;
+        @include btn-solid-hover(rgba(221, 33, 0, 0.744));
         padding: 5px 15px;
         font-size: 25px;
         margin: 0 5px;
-        background-color: rgba(206, 201, 201, 0.048);
-        text-decoration: none;
-        color: white;
-
-        &:hover {
-            background-color: rgba(221, 33, 0, 0.744);
-            transition: background-color 1s;
-        }
     }
 
     .chevronDown {
@@ -67,19 +63,13 @@
 
 // --------- Responsive Design (mobile) -----------------
 @include respond-to('small-left') {
-    .home {
+    .headerTexture {
         position: relative;
-        height: calc(100% - 60px);
-        top: 60px;
+        height: 100%;
 
         .headlineContainer {
-            width: 90%;
+            width: 80%;
             height: 90%;
-            
-            h1, h2 {
-                position: relative;
-                top: 10%;
-            }
         }
 
         h1 {
@@ -87,26 +77,25 @@
         }
 
         h2 {
-            font-size: 4vh;
+            font-size: 3vh;
         }
 
         .headlineBtns {
-            position: absolute;
             display: flex;
-            margin: 0;
+            margin: 5% 0 0 0;
             flex-direction: column;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 75%;
+            width: 100%;
+            padding: 0 10%;
             bottom: 7%;
         }
 
         .headlineBtns a {
             background-color: rgba(221, 33, 0, 0.397);
             padding: 15px 5px;
-            margin-top: 5vh;
-            border-radius: 5px;
             width: 100%;
+            margin: 0;
+            margin-top: min(10%, 20px);
+            font-size: min(7vh, 20px);
         }
     }
 }

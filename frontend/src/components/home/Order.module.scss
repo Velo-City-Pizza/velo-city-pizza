@@ -1,0 +1,81 @@
+@use 'css_global/0_abstracts/' as *;
+@use 'css_global/3_components' as *;
+
+// This file is LOCALLY SCOPED when imported. I.e, classes aren't
+//  accessible by components unless directly imported
+
+.order {
+    width: 100%;
+    min-height: max(50vh, 40vw);
+    max-height: 75vh;
+    @include horizontal-align(50%);
+    position: absolute;
+    background-color: rgb(18, 25, 34);
+    background-image: url('/assets/img/pizza_abstract.png');
+    background-repeat: no-repeat;
+    background-size: max(37%, 400px);
+    background-position-x: 13%;
+    background-position-y: 50%;
+
+    h1 {
+        font-size: 55px;
+        width: 100%;
+        padding: 2vh;
+        color: white;
+        text-align: center;
+        background-color: rgba(18, 25, 34, 0.856);
+        background-image: url('/assets/img/pattern-bg.png');
+    }
+
+    .orderOptions {
+        @include size(40%, 100%);
+        @include align(50%, 50%);
+        position: absolute;
+        text-align: center;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+
+    .orderOptions a {
+        @extend %btn-solid;
+        color: rgb(237, 236, 236);
+        font-size: 40px;
+        padding: 4% 0;
+        margin-top: 5%;
+        background-color:rgba(24, 39, 66, 0.958);
+        background-image: url('/assets/img/pattern-bg.png');
+
+        &:hover {
+            background-color:rgba(15, 48, 111, 0.721);
+        }
+    }
+}
+
+@include respond-to('small-left') {
+    .order {
+        min-height: 50vh;
+        max-height: 90vh;
+        background-image: url('/assets/img/order_section_bg.png');
+        background-size: contain;
+        // background-position: 40%;
+        // background-position-x: 13%;
+        // background-position-y: 20%;
+
+        h1 {
+            font-size: 5vh;
+        }
+
+        .orderOptions {
+            width: 70%;
+        }
+
+        .orderOptions a {
+            background: url('/assets/img/pattern-bg.png') repeat;
+            background-color:rgba(24, 39, 66, 0.845);
+            font-size: max(25px);
+            padding: 15px 5px;
+            margin-top: 5vh;
+        }
+    }
+}

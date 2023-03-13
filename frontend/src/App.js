@@ -2,7 +2,7 @@ import { BrowserRouter, useRoutes } from 'react-router-dom'
 import React from "react"
 
 // Pages and components
-import Home from './pages/home/Home'
+import Home from './pages/Home'
 import Layout from './layouts/Layout'
 
 import './css_global/main.scss'

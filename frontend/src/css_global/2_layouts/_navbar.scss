@@ -1,4 +1,5 @@
 @use '../0_abstracts/' as *;
+@use '../3_components/buttons' as *;
 
 .navbar {
     padding: 15px 0;
@@ -28,22 +29,13 @@
     }
 
     .nav-links a {
-        font-size: 25px;
-        font-weight: 100;
-        text-decoration: none;
-        color: white;
-        display: block;
-        text-align: center;
-        padding: calc($navbar-height / 5) 30px;
+        @include btn-no-border-hover(#31343bcb);
+        margin-left: 10px;
     }
 
     @include respond-to('small-right') {
         &:hover {
-            background-color: #3c3e42cb;
-        }
-
-        .nav-links a:hover {
-            @include button-hover(#4e596cfe, 10px);
+            background-color: #191b21cb;
         }
     }
 
