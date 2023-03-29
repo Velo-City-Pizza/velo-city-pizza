@@ -38,17 +38,12 @@
     }
 
     .orderOptions a {
-        @extend %btn-solid;
+        @include btn-solid-hover(rgba(24, 39, 66, 0.845), rgba(24, 32, 46, 0.958));
+        background-image: url('/assets/img/pattern-bg.png');
         color: rgb(237, 236, 236);
         font-size: 40px;
         padding: 4% 0;
         margin-top: 5%;
-        background-color:rgba(24, 39, 66, 0.958);
-        background-image: url('/assets/img/pattern-bg.png');
-
-        &:hover {
-            background-color:rgba(15, 48, 111, 0.721);
-        }
     }
 }
 
@@ -72,7 +67,6 @@
 
         .orderOptions a {
             background: url('/assets/img/pattern-bg.png') repeat;
-            background-color:rgba(24, 39, 66, 0.845);
             font-size: max(25px);
             padding: 15px 5px;
             margin-top: 5vh;

@@ -81,7 +81,7 @@
         }
 
         .nav-links.active {
-            max-height: 30vh;
+            max-height: 40vh;
         }
 
         ul {
@@ -89,16 +89,13 @@
             flex-direction: column;
             right: 0;
             width: 100%;
-            // max-height: 0;
             overflow: auto;
-            // left: 50%;
             transform: translate(0, 0);
         }
 
         li {
             width: 100%;
             border-top: 1px dotted rgb(66, 75, 104);
-            display: block
         }
 
         img {
