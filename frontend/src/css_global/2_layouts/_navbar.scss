@@ -1,0 +1,123 @@
+@use '../0_abstracts/' as *;
+@use '../3_components/buttons' as *;
+
+.navbar {
+    padding: 15px 0;
+    position: fixed;
+    width: 100%;
+    z-index: $z-index-navbar;
+    transition: background-color 0.5s;
+    display: flex;
+    max-height: $navbar-height;
+
+    ul {
+        position: absolute;
+        display: flex;
+        right: 1rem;
+        height: 100%;
+    }
+
+    li {
+        list-style: none;
+        display: flex;
+        height: 100%;
+        align-items: center;
+    }
+
+    .nav-name {
+        display: none;
+    }
+
+    .nav-links a {
+        @include btn-no-border-hover(#31343bcb);
+        margin-left: 10px;
+    }
+
+    @include respond-to('small-right') {
+        &:hover {
+            background-color: #191b21cb;
+        }
+    }
+
+    .nav-logo img {
+        @include size(auto, calc($navbar-height - 30px));
+        padding-left: 20px;
+    }
+
+    .mobile-burger{
+        display: none;
+    }
+    
+    // ---------- Responsive Design (mobile) -----------------
+    @include respond-to('small-left') {
+        background-color: #292E37;
+        padding-top: 0;
+        padding: 0;
+        flex-direction: column;
+        align-items: flex-start;
+        max-height: fit-content;
+
+        .nav-name {
+            display: block;
+            position: relative;
+            padding: 1rem 0;
+            padding-left: 1rem;
+            font-size: 25px;
+            text-decoration: none;
+            color: white;
+        }
+
+        .nav-links {
+            display: flex;
+            width: 100%;
+            max-height: 0;
+            transition: max-height 0.4s;
+        }
+
+        .nav-links a {
+            font-size: 17px;
+            width: 100%;
+            padding: 20px;
+        }
+
+        .nav-links.active {
+            max-height: 40vh;
+        }
+
+        ul {
+            position: relative;
+            flex-direction: column;
+            right: 0;
+            width: 100%;
+            overflow: auto;
+            transform: translate(0, 0);
+        }
+
+        li {
+            width: 100%;
+            border-top: 1px dotted rgb(66, 75, 104);
+        }
+
+        img {
+            display: none;
+        }
+
+        .mobile-burger {
+            display: flex;
+            position: absolute;
+            top: 1.2rem;
+            right: 1rem;
+            flex-direction: column;
+            justify-content: space-between;
+            width: 30px;
+            height: 20px;
+        }
+
+        .mobile-burger .bar {
+            height: 3px;
+            width: 100%;
+            background-color: white;
+            border-radius: 10px;
+        }
+    }
+}

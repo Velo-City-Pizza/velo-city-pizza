@@ -1,0 +1,101 @@
+@use 'css_global/0_abstracts/' as *;
+@use 'css_global/3_components/buttons' as *;
+
+// This file is LOCALLY SCOPED when imported. I.e, classes aren't
+//  accessible by components unless directly imported
+
+.headerTexture {
+    background-image: url('/assets/img/pattern-bg.png');
+    background-attachment: fixed;
+    background-repeat: repeat;
+    height: 100%;
+    width: 100%;
+    padding-top: $navbar-height;
+
+    .headlineContainer {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%,-50%);
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+
+    h1 {
+        color: white;
+        font-size: 70px;
+        font-weight: 400;
+        text-align: center;
+        margin-bottom: 10px;
+    }
+
+    h2 {
+        color: darkgray;
+        font-size: 30px;
+        font-weight: 300;
+        text-align: center;
+        margin-top: 5px;
+    }
+
+
+    .headlineBtns {
+        margin-top: 8%;
+        text-align: center;
+    }
+
+    .headlineBtns a {
+        @include btn-solid-hover(rgba(221, 33, 0, 0.744));
+        padding: 5px 15px;
+        font-size: 25px;
+        margin: 0 5px;
+    }
+
+    .chevronDown {
+        @include size(40px);
+        position: absolute;
+        bottom: 0;
+        color: white;
+        left: 50%;
+        transform: translateX(-50%);
+    }
+}
+
+// --------- Responsive Design (mobile) -----------------
+@include respond-to('small-left') {
+    .headerTexture {
+        position: relative;
+        height: 100%;
+
+        .headlineContainer {
+            width: 80%;
+            height: 90%;
+        }
+
+        h1 {
+            font-size: 7.5vh;
+        }
+
+        h2 {
+            font-size: 3vh;
+        }
+
+        .headlineBtns {
+            display: flex;
+            margin: 5% 0 0 0;
+            flex-direction: column;
+            width: 100%;
+            padding: 0 10%;
+            bottom: 7%;
+        }
+
+        .headlineBtns a {
+            background-color: rgba(221, 33, 0, 0.397);
+            padding: 15px 5px;
+            width: 100%;
+            margin: 0;
+            margin-top: min(10%, 20px);
+            font-size: min(7vh, 20px);
+        }
+    }
+}

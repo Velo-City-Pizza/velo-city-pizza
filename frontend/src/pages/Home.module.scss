@@ -1,0 +1,8 @@
+@use 'css_global/0_abstracts/' as *;
+
+// This file is LOCALLY SCOPED when imported. I.e, classes aren't
+//  accessible by components unless directly imported
+
+.home {
+    height: 100%;
+}

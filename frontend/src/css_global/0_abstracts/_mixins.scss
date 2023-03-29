@@ -1,0 +1,37 @@
+@use "./variables";
+
+@mixin size($width, $height: $width) {
+    width: $width;
+    height: $height;
+}
+
+@mixin horizontal-align($percent-x, $percent-y: 0) {
+    left: $percent-x;
+    transform: translate(-$percent-x, -$percent-y);
+}
+
+@mixin align($percent-x, $percent-y: 0) {
+    left: $percent-x;
+    top: $percent-y;
+    transform: translate(-$percent-x, -$percent-y);
+}
+
+/// Responsive breakpoint manager
+/// @access public
+/// @param {String} $breakpoint - Breakpoint
+/// @requires $breakpoints
+// Taken from https://sass-guidelin.es/#responsive-web-design-and-breakpoints
+@mixin respond-to($breakpoint) {
+    $raw-query: map-get(variables.$breakpoints, $breakpoint);
+
+    @if $raw-query {
+        $query: if(type-of($raw-query) == "string", unquote($raw-query), inspect($raw-query));
+
+        @media #{$query} {
+            @content;
+        }
+    } @else {
+        @error 'No value found for `#{$breakpoint}`. '
+         + 'Please make sure it is defined in `$breakpoints` map.';
+    }
+}

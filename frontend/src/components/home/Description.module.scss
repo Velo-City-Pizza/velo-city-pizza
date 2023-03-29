@@ -1,0 +1,11 @@
+@use 'css_global/0_abstracts/' as *;
+@use 'css_global/3_components' as *;
+
+.description {
+    @include size(100%, 50vh);
+
+    h1 {
+        font-size: 30px;
+        color: white;
+    }
+}

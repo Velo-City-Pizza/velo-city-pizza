@@ -1,0 +1,48 @@
+@use "../0_abstracts/" as *;
+
+%btn-no-border {
+    background-color: transparent;
+    border-radius: 10px;
+    color: white;
+    display: block;
+    font-size: 25px;
+    font-weight: 100;
+    padding: calc($navbar-height / 5) 30px;
+    text-align: center;
+    text-decoration: none;
+    
+}
+
+%btn-solid {
+    background-color: $default-solid-btn;
+    border: 1px solid white;
+    color: white;
+    text-decoration: none;
+
+    @include respond-to("small-left") {
+        border-radius: 5px;
+        width: 100%;
+    }
+}
+
+@mixin btn-no-border-hover($color-hover, $color: transparent) {
+    @extend %btn-no-border;
+    @include respond-to('small-right') {
+        transition: background-color 0.5s, border-radius 0.5s;
+        &:hover {
+            background-color: $color-hover;
+        }
+    }
+}
+
+@mixin btn-solid-hover($color-hover, $color: $default-solid-btn) {
+    @extend %btn-solid;
+    background-color: $color;
+
+    @include respond-to('small-right') {
+        transition: background-color 0.5s, border-radius 0.5s;
+        &:hover {
+            background-color: $color-hover;
+        }
+    }
+}
