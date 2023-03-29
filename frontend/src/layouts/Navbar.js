@@ -18,7 +18,7 @@ const Navbar = () => {
                 <span className='bar'></span>
                 <span className='bar'></span>
             </div>
-                {/* Adds or removes 'active' class based on state of expandMenu*/}
+                {/* Adds or removes 'active' class based on state of expandMenu */}
             <ul className={`nav-links${expandMenu ? ' active' : ''}`}>
                 <li><Link to='/'>Home</Link></li>
                 <li><Link to='/order_ahead'>Order</Link></li>
