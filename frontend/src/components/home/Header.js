@@ -4,7 +4,8 @@ import ChevronDown from 'components/ChevronDown'
 const Header = () => {
     return (
         <header className="header">
-            <div className={styles.headerTexture}>
+            <div className={styles.backgroundTexture}></div>
+            <div className={styles.header}>
                 <div className={styles.headlineContainer}>
                     <h1>Velo City Pizza</h1>
                     <h2>168 W 25th Ave</h2>

@@ -4,12 +4,14 @@
 // This file is LOCALLY SCOPED when imported. I.e, classes aren't
 //  accessible by components unless directly imported
 
-.headerTexture {
+.backgroundTexture {
+    @include size(100%, 100%);
     background-image: url('/assets/img/pattern-bg.png');
-    background-attachment: fixed;
     background-repeat: repeat;
-    height: 100%;
-    width: 100%;
+    position: absolute;
+}
+
+.header {
     padding-top: $navbar-height;
 
     .headlineContainer {
@@ -63,7 +65,7 @@
 
 // --------- Responsive Design (mobile) -----------------
 @include respond-to('small-left') {
-    .headerTexture {
+    .header {
         position: relative;
         height: 100%;
 
