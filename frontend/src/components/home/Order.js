@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom'
 
 const Order = () => {
   return (
-    <section id="order" class={styles.order}>
+    <section id="order" className={styles.order}>
       <h1>Order Now</h1>
       <div className={styles.orderOptions}>
         <Link to='/order_ahead' id={styles.pickup}>Store Pickup</Link>
