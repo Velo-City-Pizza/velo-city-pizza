@@ -1,0 +1,7 @@
+@use 'css_global/0_abstracts/' as *;
+
+.orderAhead {
+    position: relative;
+    @include size(100%, 100%);
+
+}
