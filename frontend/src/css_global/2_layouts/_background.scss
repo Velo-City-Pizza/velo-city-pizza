@@ -6,8 +6,8 @@
 }
 
 .background {
-    background-image: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url(../../assets/img/mainpizza.jpg);
     @include size(100%, 100vh);
+    background-image: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url(../../assets/img/mainpizza.jpg);
     background-size: cover;
     position: fixed;
     left: 0;

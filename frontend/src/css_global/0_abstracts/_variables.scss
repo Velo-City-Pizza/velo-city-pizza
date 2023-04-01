@@ -5,6 +5,9 @@ $breakpoints: (
     'large-right': (max-width: 1000px)
 );
 
+// ----------- Colors -----------------
+$background-darker-alpha: rgba(1, 0, 0, 0.308);
+
 // ----------- Navbar -----------------
 $z-index-navbar: 10;
 $navbar-height: 100px;
