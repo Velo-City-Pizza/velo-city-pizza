@@ -11,9 +11,11 @@ const {
 } = require('../controllers/categoryController')
 
 const router = express.Router()
+const cors = require('cors')
 
 // GET all categories
-router.get('/', getCategories)
+    // cors() enables cross-origin resource sharing (makes it accessible by react app)
+router.get('/', cors(), getCategories)
 
 // GET a single category
 router.get('/:id', getCategoryById)
