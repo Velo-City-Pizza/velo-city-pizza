@@ -2,6 +2,7 @@
 // Most (if not all) functions are async. Ask me if you don't know what that is in this context
 
 const Category = require('../models/categoryModel')
+const SquareTools = require('../square_tools/categories')
 const mongoose = require('mongoose')
 
 // GET all categories
@@ -79,10 +80,17 @@ const updateCategory = async (req, res) => {
     res.status(200).json(category)
 }
 
+// UPDATE all categories (deletes old ones)
+const updateAllCategories = async (req, res) => {
+    await console.log(SquareTools.retrieveCategories())
+    return;
+}
+
 module.exports = {
     getCategories,
     getCategoryById,
     createCategory,
     deleteCategory,
-    updateCategory
+    updateCategory,
+    updateAllCategories
 }

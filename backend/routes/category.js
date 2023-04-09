@@ -7,14 +7,16 @@ const {
     getCategoryById,
     createCategory,
     deleteCategory,
-    updateCategory
+    updateCategory,
+    updateAllCategories
 } = require('../controllers/categoryController')
 
 const router = express.Router()
 const cors = require('cors')
 
 // GET all categories
-    // cors() enables cross-origin resource sharing (makes it accessible by react app)
+    // cors() enables cross-origin resource sharing for this request
+    //  (makes it accessible by react app)
 router.get('/', cors(), getCategories)
 
 // GET a single category
@@ -28,5 +30,8 @@ router.delete('/:id', deleteCategory)
 
 // UPDATE a category
 router.patch('/:id', updateCategory)
+
+// UPDATE all categories (deletes old ones)
+router.patch('/', updateAllCategories)
 
 module.exports = router
