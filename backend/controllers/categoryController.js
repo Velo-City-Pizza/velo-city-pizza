@@ -30,6 +30,9 @@ const getCategoryById = async (req, res) => {
 }
 
 // POST a new category
+/**
+ * @sideEffect Deletes old category entries with a matching "name" attribute
+ */
 const createCategory = async (req, res) => {
     // See ../models/categoryModel.js
     const {name, description, selectionId} = req.body
@@ -102,17 +105,16 @@ const updateAllCategories = async (req, res) => {
 // POST category
 /**
  * @returns {Object} status: 200 or 400, jsonMsg: created category or error
+ * @sideEffect Deletes old category entries with a matching "name" attribute
  */
 async function postCategory(name, description, selectionId) {
     try {
+        const deleteResult = await Category.deleteMany({name})
+        console.log("Deleted documents =>", deleteResult)
         const category = await Category.create({name, description, selectionId})
-        debug.log("RETURNING 200", category)
-        let status = 200
-        let jsonMsg = category
-        return {status, jsonMsg}
+        return {status: 200, jsonMsg: {category, deleteResult}}
     }
     catch (error) {
-        debug.log("RETURNING", 400, error.message)
         return {status: 400, jsonMsg: {error: error.message}}
     }
 }
