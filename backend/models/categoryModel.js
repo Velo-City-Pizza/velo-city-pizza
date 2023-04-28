@@ -8,13 +8,17 @@ const category_schema = new Schema({
         type: String,
         required: true
     },
+    selectionId: {
+        type: String,
+        required: true
+    },
     description: {
         type: String,
         required: false
     },
-    item_list: {
+    itemList: {
         type: Array,
-        required: true
+        required: false
     }
 }, {timestamps: true})
 

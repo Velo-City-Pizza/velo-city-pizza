@@ -13,30 +13,48 @@ const config = {
 const client = new Client(config)
 const { catalogApi } = client
 
-const retrieveCategories = async () => {
-    if (process.env.NODE_ENV === 'development') {
-        console.log("Retrieving Categories...")
-        console.log("Env mode: ", process.env.SQUARE_ENV)
+const retrieveCustomAttrs = async () => {
+    debug.log("Retrieving custom attribute key/value pairs...")
+    customAttrPairs = null
+    try {
+        const response = await catalogApi.searchCatalogItems({
+            textFilter: 'selection level 1'
+        })
+        // debug.log(response.result)
+
+        customAttrPairs = response.result['items'][0]['itemData']['variations'].map(variation => {
+            let keyDict = Object.keys(variation['customAttributeValues'])
+            let selectionId = variation['customAttributeValues'][keyDict]['selectionUidValues'][0]
+            let name = variation['itemVariationData']['name']
+            return {name, selectionId}
+        })
+    } catch (error) {
+        console.log(error)
     }
-    square_categories = []
+    return customAttrPairs
+}
+
+const retrieveCategories = async () => {
+    debug.log("Retrieving categories...")
+    debug.log("Env mode: ", process.env.SQUARE_ENV)
+    squareCategories = null
     try {
         const response = await catalogApi.listCatalog(undefined, 'category');
-        console.log(response.result);
-        square_categories.push(...response.result['objects']['categoryData']['name'])
-        // for (const category of response.result['objects']) {
-        //     console.log(category['categoryData']['name'])
-        //     square_categories.
-        // }
+        // debug.log(response.result);
+        
+        squareCategories = response.result['objects'].map(category => {
+            let name = category['categoryData']['name']
+            let id = category['id']
+            return {name, id}
+        })
     }
     catch (error) {
         console.log(error);
     }
-    if (process.env.NODE_ENV === 'development') {
-        console.log(square_categories)
-    }
-    return;
+    return squareCategories;
 }
 
 module.exports = {
+    retrieveCustomAttrs,
     retrieveCategories
 }

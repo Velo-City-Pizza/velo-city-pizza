@@ -1,4 +1,6 @@
 require('dotenv').config()
+const { Debugger } = require('./debug')
+global.debug = Debugger(process.env.NODE_ENV === 'development', global)
 
 const express = require('express')
 const app = express()
@@ -14,9 +16,7 @@ app.use(express.json())
 
 // Custom middleware function, currently only used for debug logging
 app.use((req, res, next) => {
-    if (process.env.NODE_ENV === 'development') {
-        console.log(req.path, req.method)
-    }
+    debug.log(req.path, req.method)
     next()
 })
 
@@ -29,8 +29,8 @@ mongoose.connect(process.env.MONG_URI)
     .then(() =>{
         // -- Listen for requests --
         app.listen(process.env.PORT, () => {
-            console.log(`Connected to MongoDB, listening on port ${process.env.PORT}`)
-            console.log('DEVELOPMENT MODE =', process.env.NODE_ENV)
+            debug.log(`Connected to MongoDB, listening on port ${process.env.PORT}`)
+            debug.log('DEVELOPMENT MODE =', process.env.NODE_ENV)
         })
     })
     .catch((error) => {

@@ -30,18 +30,13 @@ const getCategoryById = async (req, res) => {
 }
 
 // POST a new category
-    // Async function, ask me if you don't know what that is
 const createCategory = async (req, res) => {
     // See ../models/categoryModel.js
-    const {name, description, item_list} = req.body
-    console.log(req.body)
-    try {
-        const category = await Category.create({name, description, item_list})
-        res.status(200).json(category)
-    }
-    catch (error) {
-        res.status(400).json({error: error.message})
-    }
+    const {name, description, selectionId} = req.body
+    debug.log(req.body)
+    const {status, jsonMsg} = await postCategory(name, description, selectionId)
+    debug.log(status, jsonMsg)
+    return res.status(status).json(jsonMsg)
 }
 
 // DELETE a category
@@ -82,9 +77,46 @@ const updateCategory = async (req, res) => {
 
 // UPDATE all categories (deletes old ones)
 const updateAllCategories = async (req, res) => {
-    await console.log(SquareTools.retrieveCategories())
-    return;
+    // TODO: Delete all old categories (either dump them all or find outdated ones after updates)
+    customAttrPairs = await SquareTools.retrieveCustomAttrs()
+    // categoryNameIdPairs = await SquareTools.retrieveCategories()
+
+    debug.log(customAttrPairs)
+    if (customAttrPairs != null) {
+        ret = null
+        for (const category of customAttrPairs) {
+            // await createCategory(category, ret)
+            await createCategory(JSON.stringify(category), ret)
+        }
+        // res.status(200).json(customAttrPairs)
+    } else {
+        return res.status(400).json({error: 'Square retrieval failed'})
+    }
+
+    // TODO Sort entries into higher-level category
+    // OR clean up Square menu (Custom attributes on desired items to be displayed)
 }
+
+// ------------------- Helpers -------------------------
+
+// POST category
+/**
+ * @returns {Object} status: 200 or 400, jsonMsg: created category or error
+ */
+async function postCategory(name, description, selectionId) {
+    try {
+        const category = await Category.create({name, description, selectionId})
+        debug.log("RETURNING 200", category)
+        let status = 200
+        let jsonMsg = category
+        return {status, jsonMsg}
+    }
+    catch (error) {
+        debug.log("RETURNING", 400, error.message)
+        return {status: 400, jsonMsg: {error: error.message}}
+    }
+}
+
 
 module.exports = {
     getCategories,
