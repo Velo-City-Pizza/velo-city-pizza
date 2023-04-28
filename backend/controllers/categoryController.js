@@ -80,24 +80,23 @@ const updateCategory = async (req, res) => {
 
 // UPDATE all categories (deletes old ones)
 const updateAllCategories = async (req, res) => {
-    // TODO: Delete all old categories (either dump them all or find outdated ones after updates)
     customAttrPairs = await SquareTools.retrieveCustomAttrs()
     // categoryNameIdPairs = await SquareTools.retrieveCategories()
 
     debug.log(customAttrPairs)
-    if (customAttrPairs != null) {
-        ret = null
-        for (const category of customAttrPairs) {
-            // await createCategory(category, ret)
-            await createCategory(JSON.stringify(category), ret)
-        }
-        // res.status(200).json(customAttrPairs)
-    } else {
+    if (customAttrPairs === null) {
         return res.status(400).json({error: 'Square retrieval failed'})
     }
 
-    // TODO Sort entries into higher-level category
-    // OR clean up Square menu (Custom attributes on desired items to be displayed)
+    var ret = {}
+    for (const category of customAttrPairs.reverse()) {
+        let postResult = await postCategory(category.name, 'test description', category.selectionId)
+        if (postResult.status !== 200) {
+            return res.status(postResult.status).json(postResult.jsonMsg)
+        }
+        Object.assign(ret, postResult)
+    }
+    return res.status(200).json(customAttrPairs)
 }
 
 // ------------------- Helpers -------------------------
