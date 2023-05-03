@@ -7,6 +7,7 @@ const app = express()
 const mongoose = require('mongoose')
 
 const category_routes = require('./routes/category')
+const item_routes = require('./routes/item')
 
 // ----------------- MIDDLEWARE ----------------------
     //  These get called on every request before the page routes
@@ -21,7 +22,8 @@ app.use((req, res, next) => {
 })
 
 // ---------------- PAGE ROUTES ----------------------
-app.use('/admin/catalog/category', category_routes) // Experimental
+app.use('/admin/catalog/category', category_routes)
+app.use('admin/catalog/item', item_routes)
 
 // --- Connect to DB ---
 mongoose.set('strictQuery', false)

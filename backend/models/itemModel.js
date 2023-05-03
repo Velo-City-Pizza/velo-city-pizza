@@ -3,7 +3,7 @@
 const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 
-const pizzaItemSchema = new Schema({
+const itemSchema = new Schema({
     name: {
         type: String,
         required: true
@@ -12,13 +12,13 @@ const pizzaItemSchema = new Schema({
         type: Number,
         required: true
     },
-    selectionId: { // TODO: Might be required, fix later
+    category: {
         type: String,
-        required: false
+        required: true
     },
     description: {
         type: String,
-        required: false
+        required: true
     },
     modifierList: {
         type: Array,
@@ -26,4 +26,4 @@ const pizzaItemSchema = new Schema({
     }
 }, {timestamps: true})
 
-module.exports = mongoose.model('PizzaItem', pizzaItemSchema)
+module.exports = mongoose.model('Item', itemSchema)

@@ -4,11 +4,8 @@ const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 
 const categorySchema = new Schema({
+    _id: String, // Overwrite ID with category ID (selectionID)
     name: {
-        type: String,
-        required: true
-    },
-    selectionId: {
         type: String,
         required: true
     },
@@ -16,10 +13,10 @@ const categorySchema = new Schema({
         type: String,
         required: false
     },
-    itemList: {
-        type: Array,
-        required: false
-    }
+    itemList: [{
+        type: Schema.Types.ObjectId,
+        ref: 'Item'
+    }]
 }, {timestamps: true})
 
 module.exports = mongoose.model('Category', categorySchema)

@@ -1,13 +1,14 @@
 // All functional behavior for category model. Called from order.js.
 // Most (if not all) functions are async. Ask me if you don't know what that is in this context
 
-const Category = require('../models/categoryModel')
+const Item = require('../models/itemModel')
 const SquareTools = require('../square_tools/categories')
 const mongoose = require('mongoose')
 
-// GET all categories
-const getCategories = async (req, res) => {
-    const categories = await Category.find({}).sort({createdAt: -1})
+// GET all items in a category
+const listCategoryItems = async (req, res) => {
+    const {category} = req.body
+    const items = await Item.find({category}).sort({createdAt: -1})
     // ^ Sorted by date created. Change sort function if desired
 
     res.status(200).json(categories)
@@ -101,21 +102,17 @@ const updateAllCategories = async (req, res) => {
 
 // ------------------- Helpers -------------------------
 
-// POST category
+// POST item
 /**
- * @returns {Object} status: 200 or 400, jsonMsg: created category or error
- * @sideEffect Deletes old category entries with a matching "name" attribute
+ * @returns {Object} status: 200 or 400, jsonMsg: created item or error
+ * @sideEffect Deletes old item entries with a matching "name" attribute
+ * @sideEffect Attaches a reference to the given category document
  */
-async function postCategory(name, description, selectionId=null) {
+async function postItem(name, category, description, baseprice=0) {
     try {
-        const deleteResult = await Category.deleteMany({name})
+        const deleteResult = await item.deleteMany({name})
         console.log("Deleted documents =>", deleteResult)
-        if (selectionId !== null) {
-            category = await Category.create({name, description, _id: selectionId})
-        }
-        else {
-            category = await Category.create({name, description})
-        }
+        category = await Item.create({name, description})
         return {status: 200, jsonMsg: {category, deleteResult}}
     }
     catch (error) {
@@ -125,10 +122,5 @@ async function postCategory(name, description, selectionId=null) {
 
 
 module.exports = {
-    getCategories,
-    getCategoryById,
-    createCategory,
-    deleteCategory,
-    updateCategory,
-    updateAllCategories
+    listCategoryItems
 }
