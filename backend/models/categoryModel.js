@@ -4,8 +4,11 @@ const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 
 const categorySchema = new Schema({
-    _id: String, // Overwrite ID with category ID (selectionID)
     name: {
+        type: String,
+        required: true
+    },
+    selectionId: {
         type: String,
         required: true
     },

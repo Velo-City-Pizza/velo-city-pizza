@@ -8,17 +8,17 @@ const itemSchema = new Schema({
         type: String,
         required: true
     },
-    basePrice: {
+    baseprice: {
         type: Number,
         required: true
     },
     category: {
-        type: String,
+        type: Schema.Types.ObjectId,
         required: true
     },
     description: {
         type: String,
-        required: true
+        required: false
     },
     modifierList: {
         type: Array,

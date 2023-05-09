@@ -23,7 +23,7 @@ app.use((req, res, next) => {
 
 // ---------------- PAGE ROUTES ----------------------
 app.use('/admin/catalog/category', category_routes)
-app.use('admin/catalog/item', item_routes)
+app.use('/admin/catalog/item', item_routes)
 
 // --- Connect to DB ---
 mongoose.set('strictQuery', false)

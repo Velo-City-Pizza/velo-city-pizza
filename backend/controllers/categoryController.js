@@ -2,7 +2,7 @@
 // Most (if not all) functions are async. Ask me if you don't know what that is in this context
 
 const Category = require('../models/categoryModel')
-const SquareTools = require('../square_tools/categories')
+const SquareTools = require('../square_tools/catalog')
 const mongoose = require('mongoose')
 
 // GET all categories
@@ -35,9 +35,9 @@ const getCategoryById = async (req, res) => {
  */
 const createCategory = async (req, res) => {
     // See ../models/categoryModel.js
-    const {name, description, selectionId} = req.body
+    const { name, description, selectionId } = req.body
     debug.log(req.body)
-    const {status, jsonMsg} = await postCategory(name, description, selectionId)
+    const { status, jsonMsg } = await postCategory(name, description, selectionId)
     debug.log(status, jsonMsg)
     return res.status(status).json(jsonMsg)
 }
@@ -80,13 +80,14 @@ const updateCategory = async (req, res) => {
 
 // UPDATE all categories (deletes old ones)
 const updateAllCategories = async (req, res) => {
-    customAttrPairs = await SquareTools.retrieveCustomAttrs()
+    var customAttributes = await SquareTools.retrieveCustomAttrs()
     // categoryNameIdPairs = await SquareTools.retrieveCategories()
 
-    debug.log(customAttrPairs)
-    if (customAttrPairs === null) {
+    debug.log(customAttributes)
+    if (customAttributes == null) {
         return res.status(400).json({error: 'Square retrieval failed'})
     }
+    var { customAttrId, customAttrPairs } = customAttributes
 
     var ret = {}
     for (const category of customAttrPairs.reverse()) {
@@ -106,20 +107,17 @@ const updateAllCategories = async (req, res) => {
  * @returns {Object} status: 200 or 400, jsonMsg: created category or error
  * @sideEffect Deletes old category entries with a matching "name" attribute
  */
-async function postCategory(name, description, selectionId=null) {
+async function postCategory(name, description, selectionId) {
     try {
-        const deleteResult = await Category.deleteMany({name})
+        const deleteResult = await Category.deleteMany({ name })
         console.log("Deleted documents =>", deleteResult)
-        if (selectionId !== null) {
-            category = await Category.create({name, description, _id: selectionId})
-        }
-        else {
-            category = await Category.create({name, description})
-        }
-        return {status: 200, jsonMsg: {category, deleteResult}}
+        category = await Category.create({ name, description, selectionId })
+        return {status: 200, jsonMsg: { category, deleteResult }}
     }
     catch (error) {
-        return {status: 400, jsonMsg: {error: error.message}}
+        return {status: 400, jsonMsg: {
+            error: `categoryController.postCategory error: ${error.message}`
+        }}
     }
 }
 

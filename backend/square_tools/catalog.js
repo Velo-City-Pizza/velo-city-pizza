@@ -13,27 +13,48 @@ const config = {
 const client = new Client(config)
 const { catalogApi } = client
 
+/**
+ * Retrieves all catalog items with a given search term
+ * @param {String} query - Search term (e.g "pizza")
+ */
+const searchItems = async (query) => {
+    return query
+}
+
+/**
+ * Retrieves attribute pairs {name, selectionId} of custom
+ * attribute categories from the designated "[Dev] Selection Level 1"
+ * Square item.
+ * @returns {Object} { customAttrId: ID of the list of custom attrs, customAttrPairs: list of {name, selectionId} }
+ * @returns null if error
+ */
 const retrieveCustomAttrs = async () => {
     debug.log("Retrieving custom attribute key/value pairs...")
-    customAttrPairs = null
+    var customAttrPairs
+    var customAttrId
     try {
         const response = await catalogApi.searchCatalogItems({
             textFilter: 'selection level 1'
         })
         // debug.log(response.result)
-
         customAttrPairs = response.result['items'][0]['itemData']['variations'].map(variation => {
             let keyDict = Object.keys(variation['customAttributeValues'])
+            customAttrId = variation['customAttributeValues'][keyDict]['customAttributeDefinitionId']
             let selectionId = variation['customAttributeValues'][keyDict]['selectionUidValues'][0]
             let name = variation['itemVariationData']['name']
             return {name, selectionId}
         })
     } catch (error) {
-        console.log(error)
+        console.log("catalog.retrieveCustomAttrs error: ", error)
     }
-    return customAttrPairs
+    if (!customAttrPairs || !customAttrId) return null
+    return { customAttrId, customAttrPairs }
 }
 
+/**
+ * Grabs all categories. Currently obselete because of the new organization method
+ * using Square's custom attributes.
+ */
 const retrieveCategories = async () => {
     debug.log("Retrieving categories...")
     debug.log("Env mode: ", process.env.SQUARE_ENV)

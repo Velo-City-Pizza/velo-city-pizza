@@ -3,7 +3,8 @@
 
 const express = require('express')
 const {
-    listCategoryItems
+    listCategoryItems,
+    createItem
 } = require('../controllers/itemController')
 
 const router = express.Router()
@@ -15,12 +16,13 @@ const cors = require('cors')
     // TODO: Figure out how to make this work with JWT
 router.get('/', cors(), listCategoryItems)
 
+// POST a new category
+router.post('/', createItem)
+
 /*
 // GET a single category
 router.get('/:id', getCategoryById)
 
-// POST a new category
-router.post('/', createCategory)
 
 // DELETE a category
 router.delete('/:id', deleteCategory)

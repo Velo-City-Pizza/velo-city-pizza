@@ -2,16 +2,17 @@
 // Most (if not all) functions are async. Ask me if you don't know what that is in this context
 
 const Item = require('../models/itemModel')
-const SquareTools = require('../square_tools/categories')
+const Category = require('../models/categoryModel')
+const SquareTools = require('../square_tools/catalog')
 const mongoose = require('mongoose')
 
 // GET all items in a category
 const listCategoryItems = async (req, res) => {
-    const {category} = req.body
-    const items = await Item.find({category}).sort({createdAt: -1})
+    const { category } = req.body
+    const items = await Item.find({}).sort({ createdAt: -1 })
     // ^ Sorted by date created. Change sort function if desired
 
-    res.status(200).json(categories)
+    res.status(200).json(items)
 }
 
 // GET a single category
@@ -33,12 +34,13 @@ const getCategoryById = async (req, res) => {
 // POST a new category
 /**
  * @sideEffect Deletes old category entries with a matching "name" attribute
+ * @sideEffect Attaches a reference to the given category
  */
-const createCategory = async (req, res) => {
+const createItem = async (req, res) => {
     // See ../models/categoryModel.js
-    const {name, description, selectionId} = req.body
+    const { name, selectionId, baseprice, description } = req.body
     debug.log(req.body)
-    const {status, jsonMsg} = await postCategory(name, description, selectionId)
+    const { status, jsonMsg } = await postItem(name, selectionId, description, baseprice)
     debug.log(status, jsonMsg)
     return res.status(status).json(jsonMsg)
 }
@@ -102,25 +104,36 @@ const updateAllCategories = async (req, res) => {
 
 // ------------------- Helpers -------------------------
 
-// POST item
 /**
+ * Post an item to a specified category selection ID 
  * @returns {Object} status: 200 or 400, jsonMsg: created item or error
  * @sideEffect Deletes old item entries with a matching "name" attribute
  * @sideEffect Attaches a reference to the given category document
  */
-async function postItem(name, category, description, baseprice=0) {
+async function postItem(name, categorySelectionId, description="", baseprice=0) {
     try {
-        const deleteResult = await item.deleteMany({name})
+        // Delete old entries with matching names
+        const deleteResult = await Item.deleteMany({ name })
         console.log("Deleted documents =>", deleteResult)
-        category = await Item.create({name, description})
-        return {status: 200, jsonMsg: {category, deleteResult}}
+        
+        // Retrieve parent category
+        var parentCategory = await Category.findOne({ selectionId: categorySelectionId })
+        if (parentCategory == null) {
+            return { status: 404, jsonMsg: 'itemController.postItem: parent category not found' }
+        }
+        // Create item with reference to parent
+        debug.log({ name, description, baseprice, category: parentCategory._id})
+        var item = await Item.create({ name, description, baseprice, category: parentCategory._id })
+        parentCategory.itemList.addToSet(item._id)
+        await parentCategory.save()
+        return { status: 200, jsonMsg: { item, deleteResult } }
     }
     catch (error) {
-        return {status: 400, jsonMsg: {error: error.message}}
+        return { status: 400, jsonMsg: { error: `itemController.postItem: ${error.message}` } }
     }
 }
 
-
 module.exports = {
-    listCategoryItems
+    listCategoryItems,
+    createItem
 }
