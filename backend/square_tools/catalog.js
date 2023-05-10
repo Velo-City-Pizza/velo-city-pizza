@@ -29,12 +29,18 @@ const fetchItems = async (selectionIds, customAttrId) => {
             }]
         });
         // Parse to get name, categorySelectionId, description, baseprice
-        debug.log(response.result)
+        var retItems = []
         for (item of response.result.items) {
-            debug.log(process.env.SQUARE_CATEGORY_DEV_ITEM)
             if (item.itemData.name === process.env.SQUARE_CATEGORY_DEV_ITEM) continue
-            
+            let key = Object.keys(item.customAttributeValues)
+            retItems.push({
+                name: item.itemData.name,
+                category: item.customAttributeValues[key].selectionUidValues,
+                description: item.itemData.description,
+                baseprice: 0 // FIXME
+            })
         }
+        return retItems
     } catch (error) {
         console.log("catalog.fetchItems error:", error);
     }
@@ -44,7 +50,8 @@ const fetchItems = async (selectionIds, customAttrId) => {
  * Retrieves attribute pairs {name, selectionId} of custom
  * attribute categories from the designated "[Dev] Selection Level 1"
  * Square item.
- * @returns {Object} { customAttrId: ID of the list of custom attrs, customAttrPairs: list of {name, selectionId} }
+ * @returns {Object} { customAttrId: ID of the list of custom attrs,
+ * customAttrPairs: list of {name, selectionId} }
  * @returns null if error
  */
 const retrieveCustomAttrs = async () => {
@@ -53,14 +60,16 @@ const retrieveCustomAttrs = async () => {
     var customAttrId
     try {
         const response = await catalogApi.searchCatalogItems({
-            textFilter: 'selection level 1'
+            textFilter: process.env.SQUARE_CATEGORY_DEV_ITEM
         })
         // debug.log(response.result)
-        customAttrPairs = response.result['items'][0]['itemData']['variations'].map(variation => {
-            let keyDict = Object.keys(variation['customAttributeValues'])
-            customAttrId = variation['customAttributeValues'][keyDict]['customAttributeDefinitionId']
-            let selectionId = variation['customAttributeValues'][keyDict]['selectionUidValues'][0]
-            let name = variation['itemVariationData']['name']
+        customAttrPairs = response.result.items[0].itemData.variations.map(variation => {
+            let keyDict = Object.keys(variation.customAttributeValues)
+            customAttrId = variation.customAttributeValues[keyDict]
+                .customAttributeDefinitionId
+            let selectionId = variation.customAttributeValues
+                [keyDict].selectionUidValues[0]
+            let name = variation.itemVariationData.name
             return { name, selectionId }
         })
     } catch (error) {

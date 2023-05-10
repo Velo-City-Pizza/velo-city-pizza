@@ -112,6 +112,19 @@ const updateAllItemsAndCategories = async (req, res) => { // TODO
     const items = await retrieveCustomAttrItems(customAttrPairs.map(pair => {
         return pair['selectionId']
     }))
+    
+    var retItems = []
+    for (item of items) {
+        const { status, jsonMsg } = await postItem(
+            item.name,
+            item.category,
+            item.description,
+            item.baseprice
+        )
+        if (status !== 200) return res.status(status).json(jsonMsg)
+        retItems.push(jsonMsg)
+    }
+    res.status(200).json(retItems)
 }
 
 // ------------------- Helpers -------------------------
