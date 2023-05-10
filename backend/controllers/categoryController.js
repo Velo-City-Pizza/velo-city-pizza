@@ -3,6 +3,7 @@
 
 const Category = require('../models/categoryModel')
 const SquareTools = require('../square_tools/catalog')
+const Data = require('./data')
 const mongoose = require('mongoose')
 
 // GET all categories
@@ -78,26 +79,15 @@ const updateCategory = async (req, res) => {
     res.status(200).json(category)
 }
 
-// UPDATE all categories (deletes old ones)
+/**
+ * UPDATE all categories (deletes old ones)
+ * @sideEffect Deletes old categories with matching "name" attribute
+ * @returns {Object} status: 200 or 400, jsonMsg: return message or json
+ */
 const updateAllCategories = async (req, res) => {
-    var customAttributes = await SquareTools.retrieveCustomAttrs()
-    // categoryNameIdPairs = await SquareTools.retrieveCategories()
-
-    debug.log(customAttributes)
-    if (customAttributes == null) {
-        return res.status(400).json({error: 'Square retrieval failed'})
-    }
-    var { customAttrId, customAttrPairs } = customAttributes
-
-    var ret = {}
-    for (const category of customAttrPairs.reverse()) {
-        let postResult = await postCategory(category.name, 'test description', category.selectionId)
-        if (postResult.status !== 200) {
-            return res.status(postResult.status).json(postResult.jsonMsg)
-        }
-        Object.assign(ret, postResult)
-    }
-    return res.status(200).json(customAttrPairs)
+    const { status, jsonMsg } = await updateAllCategoriesLogic();
+    debug.log(status, jsonMsg)
+    return res.status(status).json(jsonMsg)
 }
 
 // ------------------- Helpers -------------------------
@@ -121,6 +111,47 @@ async function postCategory(name, description, selectionId) {
     }
 }
 
+/**
+ * Helper function to update all categories
+ * @sideEffect Deletes old categories with matching "name" attribute
+ * @returns {Object} status: 200 or 400, jsonMsg: return message or json
+ */
+async function updateAllCategoriesLogic() {
+    // Pull custom attributes from Square
+    var customAttributes = await SquareTools.retrieveCustomAttrs()
+    debug.log(customAttributes)
+    if (customAttributes == null) {
+        return { status: 400, jsonMsg: {
+            error: 'categoryController.updateAllCategories: Square retrieval failed'
+        }}
+    }
+    var { customAttrId, customAttrPairs } = customAttributes
+
+    // Update customAttrId in MongoDB
+    var customAttrIdDoc = await Data.newVar('customAttrId', customAttrId)
+    if (!customAttrIdDoc) return {
+        status: 400,
+        jsonMsg: "data.js error: failed to create customAttrId document"
+    }
+    await customAttrIdDoc.save()
+
+    // Update all categories parsed from custom attributes
+    var ret = {}
+    for (const category of customAttrPairs.reverse()) {
+        let postResult = await postCategory(category.name, 'test description', category.selectionId)
+        if (postResult.status !== 200) {
+            return {
+                status: postResult.status,
+                jsonMsg: postResult.jsonMsg
+            }
+        }
+        Object.assign(ret, postResult)
+    }
+    return {
+        status: 200,
+        jsonMsg: customAttrPairs
+    }
+}
 
 module.exports = {
     getCategories,

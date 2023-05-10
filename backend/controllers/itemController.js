@@ -3,6 +3,7 @@
 
 const Item = require('../models/itemModel')
 const Category = require('../models/categoryModel')
+const Data = require('./data')
 const SquareTools = require('../square_tools/catalog')
 const mongoose = require('mongoose')
 
@@ -102,6 +103,15 @@ const updateAllCategories = async (req, res) => {
     return res.status(200).json(customAttrPairs)
 }
 
+/**
+ * Update all items -- pulls new items and updates existing ones. Does not
+ * delete non-duplicate items
+ */
+const updateAllItems = async (req, res) => {
+    
+    return null;
+}
+
 // ------------------- Helpers -------------------------
 
 /**
@@ -135,5 +145,6 @@ async function postItem(name, categorySelectionId, description="", baseprice=0) 
 
 module.exports = {
     listCategoryItems,
-    createItem
+    createItem,
+    updateAllItems
 }
