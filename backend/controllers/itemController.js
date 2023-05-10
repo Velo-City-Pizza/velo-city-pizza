@@ -5,6 +5,9 @@ const Item = require('../models/itemModel')
 const Category = require('../models/categoryModel')
 const Data = require('./data')
 const SquareTools = require('../square_tools/catalog')
+const {
+    updateAllCategoriesLogic
+} = require('./categoryController')
 const mongoose = require('mongoose')
 
 // GET all items in a category
@@ -23,9 +26,7 @@ const getCategoryById = async (req, res) => {
     if (!mongoose.Types.ObjectId.isValid(id)) {
         return res.status(404).json({error: 'No such category'})
     }
-
     const category = await Category.findById(id)
-    
     if (!category) {
         return res.status(404).json({error: 'Given category does not exist'})
     }
@@ -49,36 +50,28 @@ const createItem = async (req, res) => {
 // DELETE a category
 const deleteCategory = async (req, res) => {
     const {id} = req.params
-
     if (!mongoose.Types.ObjectId.isValid(id)) {
         return res.status(404).json({error: 'No such category'})
     }
-
     const category = await Category.findOneAndDelete({_id: id})
-
     if (!category) {
         return res.status(400).json({error: 'Given category does not exist'})
     }
-
     res.status(200).json(category)
 }
 
 // UPDATE a category
 const updateCategory = async (req, res) => {
     const {id} = req.params
-
     if (!mongoose.Types.ObjectId.isValid(id)) {
         return res.status(404).json({error: 'No such category'})
     }
-
     const category = await Category.findOneAndUpdate({_id: id}, {
         ...req.body
     })
-
     if (!category) {
         return res.status(400).json({error: 'No such category'})
     }
-
     res.status(200).json(category)
 }
 
@@ -104,15 +97,41 @@ const updateAllCategories = async (req, res) => {
 }
 
 /**
- * Update all items -- pulls new items and updates existing ones. Does not
+ * Update all items AND categories -- pulls new items and updates existing ones. Does not
  * delete non-duplicate items
+ * @sideEffect Deletes old categories and items with matching "name" attribute
+ * @sideEffect Creates/updates the "customAttrId" document using the Data model
  */
-const updateAllItems = async (req, res) => {
+const updateAllItemsAndCategories = async (req, res) => { // TODO
+    // First, update all categories
+    const { status, jsonMsg } = await updateAllCategoriesLogic()
+    if (status !== 200) return res.status(status).json(jsonMsg)
+    const { customAttrId, customAttrPairs } = jsonMsg
     
-    return null;
+    // Retrieve all items with relevant custom attributes
+    const items = await retrieveCustomAttrItems(customAttrPairs.map(pair => {
+        return pair['selectionId']
+    }))
 }
 
 // ------------------- Helpers -------------------------
+
+/**
+ * Retrieve items with relevant custom attributes
+ * @returns {Array} List of items on success, null on failure
+ */
+async function retrieveCustomAttrItems(selectionIds, customAttrId=null) {
+    debug.log("Selection Ids", selectionIds)
+    // If customAttrId is not supplied, request it from MongoDB
+    if (customAttrId == null) {
+        const customAttrIdQuery = await Data.getData('customAttrId')
+        if (customAttrIdQuery == null) return null
+        // At this point, customAttrIdQuery.data[0] holds the customAttrId
+        customAttrId = customAttrIdQuery.data[0]
+    }
+    // Search items by selectionId
+    return await SquareTools.fetchItems(selectionIds, customAttrId)
+}
 
 /**
  * Post an item to a specified category selection ID 
@@ -120,22 +139,37 @@ const updateAllItems = async (req, res) => {
  * @sideEffect Deletes old item entries with a matching "name" attribute
  * @sideEffect Attaches a reference to the given category document
  */
-async function postItem(name, categorySelectionId, description="", baseprice=0) {
+async function postItem(name, categorySelectionIds, description="", baseprice=0) {
     try {
         // Delete old entries with matching names
         const deleteResult = await Item.deleteMany({ name })
         console.log("Deleted documents =>", deleteResult)
         
-        // Retrieve parent category
-        var parentCategory = await Category.findOne({ selectionId: categorySelectionId })
-        if (parentCategory == null) {
-            return { status: 404, jsonMsg: 'itemController.postItem: parent category not found' }
+        // Retrieve parent categories
+        var parentCategories = []
+        for (categorySelectionId of categorySelectionIds) {
+            let parentCategory = await Category.findOne({ selectionId: categorySelectionId })
+            if (parentCategory == null) {
+                return {
+                    status: 404,
+                    jsonMsg: `itemController.postItem: parent category \
+                        ${categorySelectionId} not found`
+                }
+            }
+            parentCategories.push(parentCategory)
         }
-        // Create item with reference to parent
-        debug.log({ name, description, baseprice, category: parentCategory._id})
-        var item = await Item.create({ name, description, baseprice, category: parentCategory._id })
-        parentCategory.itemList.addToSet(item._id)
-        await parentCategory.save()
+
+        // Create item with references to parents
+        var item = await Item.create({
+            name,
+            description,
+            baseprice,
+            categories: parentCategories.map(parent => parent._id)
+        })
+        for (parentCategory of parentCategories) {
+            parentCategory.itemList.addToSet(item._id)
+            await parentCategory.save()
+        }
         return { status: 200, jsonMsg: { item, deleteResult } }
     }
     catch (error) {
@@ -146,5 +180,5 @@ async function postItem(name, categorySelectionId, description="", baseprice=0) 
 module.exports = {
     listCategoryItems,
     createItem,
-    updateAllItems
+    updateAllItemsAndCategories
 }

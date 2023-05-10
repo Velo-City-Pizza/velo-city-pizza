@@ -5,7 +5,7 @@ const express = require('express')
 const {
     listCategoryItems,
     createItem,
-    updateAllItems
+    updateAllItemsAndCategories
 } = require('../controllers/itemController')
 
 const router = express.Router()
@@ -21,7 +21,7 @@ router.get('/', cors(), listCategoryItems)
 router.post('/', createItem)
 
 // PATCH update all items (does not remove old items with non-matching names)
-router.patch('/', updateAllItems)
+router.patch('/', updateAllItemsAndCategories)
 
 /*
 // GET a single category

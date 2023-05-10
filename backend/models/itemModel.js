@@ -12,8 +12,8 @@ const itemSchema = new Schema({
         type: Number,
         required: true
     },
-    category: {
-        type: Schema.Types.ObjectId,
+    categories: {
+        type: [Schema.Types.ObjectId],
         required: true
     },
     description: {

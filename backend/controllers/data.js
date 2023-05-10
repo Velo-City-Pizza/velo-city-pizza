@@ -16,6 +16,20 @@ async function newVar(name, ...data) {
     }
 }
 
+/**
+ * Get data object
+ * @returns Requested data document on success, null on failure
+ */
+async function getData(name) {
+    try {
+        return await Data.findOne({ name })
+    } catch (error) {
+        console.log("data.getData error: findOne() unsuccessful")
+        return null
+    }
+}
+
 module.exports = {
-    newVar
+    newVar,
+    getData
 }

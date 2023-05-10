@@ -14,11 +14,30 @@ const client = new Client(config)
 const { catalogApi } = client
 
 /**
- * Retrieves all catalog items with a given search term
- * @param {String} query - Search term (e.g "pizza")
+ * Retrieves all catalog items with matching selection IDs and custom attribute ID
+ * @param {Array} selectionIds List of selection IDs to search for
+ * @param {String} customAttrId Attribute ID that the selection IDs belong to
+ * @returns A list of items on success, null on failure
  */
-const searchItems = async (query) => {
-    return query
+const fetchItems = async (selectionIds, customAttrId) => {
+    try {
+        // Request items
+        const response = await catalogApi.searchCatalogItems({
+            customAttributeFilters: [{
+                customAttributeDefinitionId: customAttrId,
+                selectionUidsFilter: selectionIds
+            }]
+        });
+        // Parse to get name, categorySelectionId, description, baseprice
+        debug.log(response.result)
+        for (item of response.result.items) {
+            debug.log(process.env.SQUARE_CATEGORY_DEV_ITEM)
+            if (item.itemData.name === process.env.SQUARE_CATEGORY_DEV_ITEM) continue
+            
+        }
+    } catch (error) {
+        console.log("catalog.fetchItems error:", error);
+    }
 }
 
 /**
@@ -42,7 +61,7 @@ const retrieveCustomAttrs = async () => {
             customAttrId = variation['customAttributeValues'][keyDict]['customAttributeDefinitionId']
             let selectionId = variation['customAttributeValues'][keyDict]['selectionUidValues'][0]
             let name = variation['itemVariationData']['name']
-            return {name, selectionId}
+            return { name, selectionId }
         })
     } catch (error) {
         console.log("catalog.retrieveCustomAttrs error: ", error)
@@ -62,11 +81,11 @@ const retrieveCategories = async () => {
     try {
         const response = await catalogApi.listCatalog(undefined, 'category');
         // debug.log(response.result);
-        
+
         squareCategories = response.result['objects'].map(category => {
             let name = category['categoryData']['name']
             let id = category['id']
-            return {name, id}
+            return { name, id }
         })
     }
     catch (error) {
@@ -76,6 +95,7 @@ const retrieveCategories = async () => {
 }
 
 module.exports = {
+    fetchItems,
     retrieveCustomAttrs,
     retrieveCategories
 }

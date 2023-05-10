@@ -81,12 +81,12 @@ const updateCategory = async (req, res) => {
 
 /**
  * UPDATE all categories (deletes old ones)
- * @sideEffect Deletes old categories with matching "name" attribute
  * @returns {Object} status: 200 or 400, jsonMsg: return message or json
+ * @sideEffect Deletes old categories with matching "name" attribute
+ * @sideEffect Creates/updates the "customAttrId" document using the Data model
  */
 const updateAllCategories = async (req, res) => {
     const { status, jsonMsg } = await updateAllCategoriesLogic();
-    debug.log(status, jsonMsg)
     return res.status(status).json(jsonMsg)
 }
 
@@ -113,8 +113,9 @@ async function postCategory(name, description, selectionId) {
 
 /**
  * Helper function to update all categories
- * @sideEffect Deletes old categories with matching "name" attribute
  * @returns {Object} status: 200 or 400, jsonMsg: return message or json
+ * @sideEffect Deletes old categories with matching "name" attribute
+ * @sideEffect Creates/updates the "customAttrId" document using the Data model
  */
 async function updateAllCategoriesLogic() {
     // Pull custom attributes from Square
@@ -149,7 +150,10 @@ async function updateAllCategoriesLogic() {
     }
     return {
         status: 200,
-        jsonMsg: customAttrPairs
+        jsonMsg: {
+            customAttrId,
+            customAttrPairs
+        }
     }
 }
 
@@ -159,5 +163,6 @@ module.exports = {
     createCategory,
     deleteCategory,
     updateCategory,
-    updateAllCategories
+    updateAllCategories,
+    updateAllCategoriesLogic
 }
