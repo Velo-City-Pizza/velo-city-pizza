@@ -40,9 +40,9 @@ const getCategoryById = async (req, res) => {
  */
 const createItem = async (req, res) => {
     // See ../models/categoryModel.js
-    const { name, selectionId, baseprice, description } = req.body
+    const { name, selectionId, baseprice: variations, description } = req.body
     debug.log(req.body)
-    const { status, jsonMsg } = await postItem(name, selectionId, description, baseprice)
+    const { status, jsonMsg } = await postItem(name, selectionId, description, variations)
     debug.log(status, jsonMsg)
     return res.status(status).json(jsonMsg)
 }
@@ -111,7 +111,7 @@ const updateAllItemsAndCategories = async (req, res) => { // TODO
     // Retrieve all items with relevant custom attributes
     const items = await retrieveCustomAttrItems(customAttrPairs.map(pair => {
         return pair['selectionId']
-    }))
+    }), customAttrId)
     
     var retItems = []
     for (item of items) {
@@ -119,7 +119,7 @@ const updateAllItemsAndCategories = async (req, res) => { // TODO
             item.name,
             item.category,
             item.description,
-            item.baseprice
+            item.variations
         )
         if (status !== 200) return res.status(status).json(jsonMsg)
         retItems.push(jsonMsg)
@@ -152,7 +152,7 @@ async function retrieveCustomAttrItems(selectionIds, customAttrId=null) {
  * @sideEffect Deletes old item entries with a matching "name" attribute
  * @sideEffect Attaches a reference to the given category document
  */
-async function postItem(name, categorySelectionIds, description="", baseprice=0) {
+async function postItem(name, categorySelectionIds, description="", variations) {
     try {
         // Delete old entries with matching names
         const deleteResult = await Item.deleteMany({ name })
@@ -173,12 +173,18 @@ async function postItem(name, categorySelectionIds, description="", baseprice=0)
         }
 
         // Create item with references to parents
+        debug.log(variations)
+        debug.log(typeof variations[0].priceMoney.amount)
+        debug.log(bigint in variations)
+        debug.log(bigint in [BigInt(400)])
         var item = await Item.create({
             name,
             description,
-            baseprice,
+            variations: variations,
+            // variations: [1, 2, 3], // FIXME
             categories: parentCategories.map(parent => parent._id)
         })
+        debug.log("item creation success")
         for (parentCategory of parentCategories) {
             parentCategory.itemList.addToSet(item._id)
             await parentCategory.save()

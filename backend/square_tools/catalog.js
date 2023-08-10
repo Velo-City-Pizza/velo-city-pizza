@@ -37,7 +37,10 @@ const fetchItems = async (selectionIds, customAttrId) => {
                 name: item.itemData.name,
                 category: item.customAttributeValues[key].selectionUidValues,
                 description: item.itemData.description,
-                baseprice: 0 // FIXME
+                variations: item.itemData.variations.map(variation => {
+                    return variation.itemVariationData // FIXME priceMoney.amount is BigInt,
+                    // which is not compatible with mongoose
+                })
             })
         }
         return retItems

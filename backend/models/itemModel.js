@@ -8,8 +8,8 @@ const itemSchema = new Schema({
         type: String,
         required: true
     },
-    baseprice: {
-        type: Number,
+    variations: {
+        type: Array,
         required: true
     },
     categories: {
