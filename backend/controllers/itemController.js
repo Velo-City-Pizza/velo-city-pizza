@@ -12,10 +12,31 @@ const mongoose = require('mongoose')
 
 // GET all items in a category
 const listCategoryItems = async (req, res) => {
-    const { category } = req.body
-    const items = await Item.find({}).sort({ createdAt: -1 })
-    // ^ Sorted by date created. Change sort function if desired
+    const {id} = req.params
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+        return res.status(404).json({error: 'No such category'})
+    }
+    const category = await Category.findById(id)
+    if (!category) {
+        return res.status(404).json({error: 'Given category does not exist'})
+    }
+    const categoryPopulated = await category.populate('itemList')
+    if (!categoryPopulated) {
+        return res.status(404).json({ error: 'Given item(s) do(es) not exist when attempting to populate category' })
+    }
+    var items = []
+    if (categoryPopulated.itemList.length > 0) {
+        // Fetch items from square
+        items = await SquareTools.fetchItems(
+            [categoryPopulated.selectionId],
+            categoryPopulated.customAttrId,
+            mode='full'
+        )
+    }
 
+    BigInt.prototype.toJSON = function () {
+        return this.toString()
+    }
     res.status(200).json(items)
 }
 
@@ -33,14 +54,14 @@ const getCategoryById = async (req, res) => {
     res.status(200).json(category)
 }
 
-// POST a new category
+// POST a new item
 /**
- * @sideEffect Deletes old category entries with a matching "name" attribute
- * @sideEffect Attaches a reference to the given category
+ * @sideEffect Deletes old item entries with a matching "name" attribute
+ * @sideEffect Attaches a reference to the given item
  */
 const createItem = async (req, res) => {
     // See ../models/categoryModel.js
-    const { name, selectionId, baseprice: variations, description } = req.body
+    const { name, selectionIds } = req.body
     debug.log(req.body)
     const { status, jsonMsg } = await postItem(name, selectionId, description, variations)
     debug.log(status, jsonMsg)
@@ -109,21 +130,23 @@ const updateAllItemsAndCategories = async (req, res) => { // TODO
     const { customAttrId, customAttrPairs } = jsonMsg
     
     // Retrieve all items with relevant custom attributes
-    const items = await retrieveCustomAttrItems(customAttrPairs.map(pair => {
+    const selectionIds = customAttrPairs.map(pair => {
         return pair['selectionId']
-    }), customAttrId)
+    })
+    const items = await retrieveCustomAttrItems(selectionIds, customAttrId)
     
     var retItems = []
     for (item of items) {
         const { status, jsonMsg } = await postItem(
+            item._id,
             item.name,
             item.category,
-            item.description,
-            item.variations
+            customAttrId,
         )
         if (status !== 200) return res.status(status).json(jsonMsg)
         retItems.push(jsonMsg)
     }
+    debug.log(retItems)
     res.status(200).json(retItems)
 }
 
@@ -152,7 +175,7 @@ async function retrieveCustomAttrItems(selectionIds, customAttrId=null) {
  * @sideEffect Deletes old item entries with a matching "name" attribute
  * @sideEffect Attaches a reference to the given category document
  */
-async function postItem(name, categorySelectionIds, description="", variations) {
+async function postItem(id, name, categorySelectionIds, customAttrId) {
     try {
         // Delete old entries with matching names
         const deleteResult = await Item.deleteMany({ name })
@@ -173,20 +196,16 @@ async function postItem(name, categorySelectionIds, description="", variations) 
         }
 
         // Create item with references to parents
-        debug.log(variations)
-        debug.log(typeof variations[0].priceMoney.amount)
-        debug.log(bigint in variations)
-        debug.log(bigint in [BigInt(400)])
+        debug.log(id, name, customAttrId)
         var item = await Item.create({
+            _id: id,
             name,
-            description,
-            variations: variations,
-            // variations: [1, 2, 3], // FIXME
-            categories: parentCategories.map(parent => parent._id)
+            categories: parentCategories.map(parent => parent._id),
         })
         debug.log("item creation success")
         for (parentCategory of parentCategories) {
             parentCategory.itemList.addToSet(item._id)
+            parentCategory.customAttrId = customAttrId
             await parentCategory.save()
         }
         return { status: 200, jsonMsg: { item, deleteResult } }

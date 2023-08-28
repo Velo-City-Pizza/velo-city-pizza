@@ -1,7 +1,30 @@
 @use 'css_global/0_abstracts/' as *;
 
+// This file is LOCALLY SCOPED when imported. I.e, classes aren't
+//  accessible by components unless directly imported
+
+.categories {
+    @include align(50%);
+    background-color: rgba(35, 38, 42, 0.736);
+    border-radius: 15px;
+    margin-top: 4%;
+    text-align: center;
+    padding: 3% 5px;
+    position: relative;
+    width: 75%;
+
+    h1 {
+        color: white;
+        font-size: 40px;
+    }
+
+    h2 {
+        color: white;
+        font-size: 25px;
+    }
+}
+
 .orderAhead {
     position: relative;
     @include size(100%, 100%);
-
 }

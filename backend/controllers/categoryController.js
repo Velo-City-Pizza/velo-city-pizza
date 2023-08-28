@@ -101,7 +101,7 @@ async function postCategory(name, description, selectionId) {
     try {
         const deleteResult = await Category.deleteMany({ name })
         console.log("Deleted documents =>", deleteResult)
-        category = await Category.create({ name, description, selectionId })
+        category = await Category.create({ name, description, selectionId, customAttrId: "0" })
         return {status: 200, jsonMsg: { category, deleteResult }}
     }
     catch (error) {

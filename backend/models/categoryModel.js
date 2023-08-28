@@ -16,10 +16,14 @@ const categorySchema = new Schema({
         type: String,
         required: false
     },
-    itemList: [{
-        type: Schema.Types.ObjectId,
-        ref: 'Item'
-    }]
+    itemList:{
+        type: [{
+            type: String,
+            ref: 'Item'
+        }],
+        validate: v => Array.isArray(v)
+    },
+    customAttrId: String
 }, {timestamps: true})
 
 module.exports = mongoose.model('Category', categorySchema)

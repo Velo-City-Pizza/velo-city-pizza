@@ -59,7 +59,7 @@
     
     // ---------- Responsive Design (mobile) -----------------
     @include respond-to('small-left') {
-        background-color: #292E37;
+        background-color: $navbar-mobile-gray;
         padding-top: 0;
         padding: 0;
         flex-direction: column;

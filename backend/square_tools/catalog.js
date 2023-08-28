@@ -17,9 +17,10 @@ const { catalogApi } = client
  * Retrieves all catalog items with matching selection IDs and custom attribute ID
  * @param {Array} selectionIds List of selection IDs to search for
  * @param {String} customAttrId Attribute ID that the selection IDs belong to
+ * @param {String} mode Return items in 'db' (truncated) format or 'full' format. Defaults to 'db'
  * @returns A list of items on success, null on failure
  */
-const fetchItems = async (selectionIds, customAttrId) => {
+const fetchItems = async (selectionIds, customAttrId, mode='db') => {
     try {
         // Request items
         const response = await catalogApi.searchCatalogItems({
@@ -33,14 +34,19 @@ const fetchItems = async (selectionIds, customAttrId) => {
         for (item of response.result.items) {
             if (item.itemData.name === process.env.SQUARE_CATEGORY_DEV_ITEM) continue
             let key = Object.keys(item.customAttributeValues)
+            var variations = false
+            var description = false
+            if (mode === 'full')
+                variations = item.itemData.variations.map(variation => {
+                    return variation.itemVariationData
+                })
+                description = item.itemData.description
             retItems.push({
+                _id: item.id,
                 name: item.itemData.name,
                 category: item.customAttributeValues[key].selectionUidValues,
-                description: item.itemData.description,
-                variations: item.itemData.variations.map(variation => {
-                    return variation.itemVariationData // FIXME priceMoney.amount is BigInt,
-                    // which is not compatible with mongoose
-                })
+                ...(description) && {description},
+                ...(variations) && {variations}
             })
         }
         return retItems

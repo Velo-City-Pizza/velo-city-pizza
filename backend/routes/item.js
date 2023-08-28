@@ -5,28 +5,27 @@ const express = require('express')
 const {
     listCategoryItems,
     createItem,
-    updateAllItemsAndCategories
+    updateAllItemsAndCategories,
 } = require('../controllers/itemController')
 
 const router = express.Router()
 const cors = require('cors')
 
+// router.get('/', cors(), listCategoryItems)
 // GET (list) all items in a specified category
     // cors() enables cross-origin resource sharing for this request
     //  (makes it accessible by react app)
     // TODO: Figure out how to make this work with JWT
-router.get('/', cors(), listCategoryItems)
-
-// POST a new category
-router.post('/', createItem)
-
-// PATCH update all items (does not remove old items with non-matching names)
-router.patch('/', updateAllItemsAndCategories)
-
-/*
-// GET a single category
-router.get('/:id', getCategoryById)
-
+    router.get('/:id', cors(), listCategoryItems)
+    
+    // POST a new category
+    router.post('/', createItem)
+    
+    // PATCH update all items (does not remove old items with non-matching names)
+    router.patch('/', updateAllItemsAndCategories)
+    
+    
+    /*
 
 // DELETE a category
 router.delete('/:id', deleteCategory)
